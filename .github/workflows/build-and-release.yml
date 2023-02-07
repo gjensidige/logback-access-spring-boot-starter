@@ -1,0 +1,13 @@
+name: Build and release
+
+on:
+  push:
+    branches:
+      - 'next'
+
+jobs:
+  build-and-release:
+    name: Build and release
+    uses: gjensidige/service-reusable-workflows/.github/workflows/build-and-release-backend-client.yml@main
+    secrets:
+      token: ${{ secrets.ACTIONS_SYSTEM_USER }}
