@@ -8,6 +8,47 @@ on:
 jobs:
   build-and-release:
     name: Build and release
-    uses: gjensidige/service-reusable-workflows/.github/workflows/build-and-release-backend-client.yml@main
-    secrets:
-      token: ${{ secrets.ACTIONS_SYSTEM_USER }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          token: ${{ secrets.ACTIONS_SYSTEM_USER }}
+
+      - name: Set up JDK
+        uses: actions/setup-java@v3
+        with:
+          java-version: 17
+          distribution: adopt
+          cache: maven
+          server-id: github
+          settings-path: ${{ github.workspace }}
+
+      - name: Set up Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: "18.x"
+          registry-url: https://npm.pkg.github.com
+
+      - name: Run tests
+        run: |
+          mvn verify       \
+            --show-version \
+            --batch-mode   \
+            --settings $GITHUB_WORKSPACE/settings.xml
+          mvn --batch-mode clean
+        env:
+          GITHUB_TOKEN: ${{ secrets.token }}
+
+      - name: Install semantic release configuration
+        run: |
+          npm install --global --save-dev \
+              semantic-release@19         \
+              @gjensidige/service-semantic-release-backend-client@latest
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.ACTIONS_SYSTEM_USER }}
+
+      - name: Create semantic release
+        run: npx semantic-release --extends @gjensidige/service-semantic-release-backend-client
+        env:
+          GITHUB_TOKEN: ${{ secrets.ACTIONS_SYSTEM_USER }}
