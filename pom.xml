@@ -40,20 +40,6 @@
         </repository>
     </repositories>
 
-    <properties>
-        <gpg.skip>true</gpg.skip>
-        <skipNexusStagingDeployMojo>true</skipNexusStagingDeployMojo>
-    </properties>
-
-    <profiles>
-        <profile>
-            <id>release</id>
-            <properties>
-                <gpg.skip>false</gpg.skip>
-                <skipNexusStagingDeployMojo>false</skipNexusStagingDeployMojo>
-            </properties>
-        </profile>
-    </profiles>
 
     <dependencies>
         <dependency>

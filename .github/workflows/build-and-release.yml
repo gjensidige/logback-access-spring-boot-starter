@@ -38,7 +38,7 @@ jobs:
             --settings $GITHUB_WORKSPACE/settings.xml
           mvn --batch-mode clean
         env:
-          GITHUB_TOKEN: ${{ secrets.token }}
+          GITHUB_TOKEN: ${{ secrets.ACTIONS_SYSTEM_USER }}
 
       - name: Install semantic release configuration
         run: |
